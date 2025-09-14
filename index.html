@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insights3D — The Ba**ds of Bollywood Analysis Report</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#333;line-height:1.6}
+    .container{max-width:1400px;margin:0 auto;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+    .header{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);color:#fff;padding:60px 40px;text-align:center;position:relative;overflow:hidden}
+    .brand-name{font-size:1.8em;font-weight:800;margin-top:20px;position:relative;z-index:2}
+    .brand-tagline{font-size:.95em;opacity:.9;margin-top:6px;position:relative;z-index:2}
+    .footer{background:#1e3c72;color:#fff;padding:40px;text-align:center}
+    a.footer-link{color:#fff;text-decoration:underline}
+    .logo-container{display:inline-block;margin-bottom:30px;perspective:1000px;position:relative;z-index:2}
+    .cube{--cube-size:80px;width:var(--cube-size);height:var(--cube-size);position:relative;transform-style:preserve-3d;animation:rotateCube 4s infinite linear}
+    @keyframes rotateCube{0%{transform:rotateX(0) rotateY(0)}100%{transform:rotateX(360deg) rotateY(360deg)}}
+    .cube-face{position:absolute;width:var(--cube-size);height:var(--cube-size);border:2px solid rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font-size:calc(var(--cube-size) * 0.3);font-weight:800;color:#fff}
+    .front{background:linear-gradient(135deg,rgba(102,126,234,.85),rgba(118,75,162,.85));transform:translateZ(calc(var(--cube-size)/2))}
+    .back{background:linear-gradient(135deg,rgba(0,221,136,.85),rgba(102,126,234,.85));transform:rotateY(180deg) translateZ(calc(var(--cube-size)/2))}
+    .left{background:linear-gradient(135deg,rgba(255,170,0,.85),rgba(255,68,68,.85));transform:rotateY(-90deg) translateZ(calc(var(--cube-size)/2))}
+    .right{background:linear-gradient(135deg,rgba(118,75,162,.85),rgba(255,170,0,.85));transform:rotateY(90deg) translateZ(calc(var(--cube-size)/2))}
+    .top{background:linear-gradient(135deg,rgba(0,221,136,.85),rgba(255,68,68,.85));transform:rotateX(90deg) translateZ(calc(var(--cube-size)/2))}
+    .bottom{background:linear-gradient(135deg,rgba(102,126,234,.85),rgba(0,221,136,.85));transform:rotateX(-90deg) translateZ(calc(var(--cube-size)/2))}
+    .report-content{padding:40px}
+    .nav-tabs{display:flex;background:#f8f9fa;border-radius:12px 12px 0 0;overflow:hidden;margin-bottom:0}
+    .nav-tab{flex:1;padding:15px 20px;background:#f8f9fa;color:#666;border:none;cursor:pointer;transition:all 0.3s ease;font-weight:600;font-size:0.95em}
+    .nav-tab:hover{background:#e9ecef;transform:translateY(-2px)}
+    .nav-tab.active{background:linear-gradient(135deg,#667eea,#764ba2);color:white}
+    .tab-content{display:none;background:white;border-radius:0 0 12px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);padding:40px;margin-bottom:30px}
+    .tab-content.active{display:block}
+    .stats-dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;margin:30px 0}
+    .stat-card{background:linear-gradient(135deg,#f093fb,#f5576c);color:white;padding:25px;border-radius:15px;text-align:center;transition:all 0.3s ease}
+    .stat-card:hover{transform:scale(1.05);box-shadow:0 15px 35px rgba(0,0,0,0.2)}
+    .stat-value{font-size:2.8em;font-weight:bold;margin-bottom:8px}
+    .stat-label{font-size:0.9em;opacity:0.9;text-transform:uppercase;letter-spacing:1px}
+    .executive-summary{background:#f8f9fa;border-radius:15px;padding:35px;margin:30px 0;border-left:5px solid #667eea}
+    .key-insights{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:25px;margin:30px 0}
+    .insight-card{background:white;border-radius:15px;padding:25px;box-shadow:0 4px 15px rgba(0,0,0,0.1);border-top:4px solid #667eea}
+    .insight-title{font-weight:bold;color:#667eea;margin-bottom:15px;font-size:1.1em}
+    .analysis-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:25px;margin:30px 0}
+    .analysis-card{background:white;border-radius:12px;padding:25px;box-shadow:0 4px 15px rgba(0,0,0,0.1);transition:all 0.3s ease}
+    .analysis-card:hover{transform:translateY(-5px)}
+    .analysis-header{font-size:1.2em;font-weight:bold;margin-bottom:15px}
+    .analysis-header.strengths{color:#28a745}
+    .analysis-header.weaknesses{color:#dc3545}
+    .analysis-header.improvements{color:#667eea}
+    .segment-timeline{margin:40px 0;background:#f8f9fa;border-radius:15px;padding:30px}
+    .timeline-item{display:flex;align-items:center;margin:20px 0;padding:20px;background:white;border-radius:12px;cursor:pointer;transition:all 0.3s ease;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+    .timeline-item:hover{transform:translateX(10px);box-shadow:0 8px 25px rgba(0,0,0,0.15)}
+    .timeline-item.selected{background:linear-gradient(135deg,#667eea,#764ba2);color:white}
+    .timeline-timestamp{background:#667eea;color:white;padding:8px 15px;border-radius:25px;font-size:0.9em;margin-right:20px;font-weight:bold;min-width:120px}
+    .timeline-content{flex:1;padding:0 15px}
+    .timeline-title{font-size:1.1em;font-weight:bold;margin-bottom:5px}
+    .timeline-description{font-size:0.9em;opacity:0.8}
+    .timeline-score{background:#28a745;color:white;padding:8px 15px;border-radius:25px;font-size:0.9em;margin-left:20px;font-weight:bold}
+    .detailed-analysis{display:none;margin-top:30px;background:white;border-radius:15px;padding:35px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+    .detailed-analysis.show{display:block}
+    .segment-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin:25px 0}
+    .breakdown-section{background:#f8f9fa;border-radius:12px;padding:20px}
+    .breakdown-title{font-weight:bold;margin-bottom:15px;color:#667eea}
+    .performance-dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:25px;margin:30px 0}
+    .performance-card{background:white;border-radius:15px;padding:25px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+    .metric-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .metric-title{font-size:1.1em;font-weight:bold;color:#667eea}
+    .metric-score{background:#28a745;color:white;padding:6px 15px;border-radius:20px;font-size:0.9em;font-weight:bold}
+    .benchmark-comparison{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin:20px 0}
+    .benchmark-item{display:flex;justify-content:space-between;padding:12px;background:#f8f9fa;border-radius:8px;font-size:0.9em}
+    .critical-issues{background:#fff5f5;border:1px solid #fed7d7;border-radius:15px;padding:30px;margin:25px 0}
+    .issue-priority{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:25px;margin:25px 0}
+    .priority-card{background:white;border-radius:15px;padding:25px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+    .priority-high{border-left:5px solid #dc3545}
+    .priority-medium{border-left:5px solid #ffc107}
+    .priority-low{border-left:5px solid #28a745}
+    .priority-header{font-weight:bold;margin-bottom:15px;font-size:1.1em;display:flex;align-items:center}
+    .priority-badge{padding:4px 12px;border-radius:15px;font-size:0.8em;margin-left:10px;color:white}
+    .high-priority{background:#dc3545}
+    .medium-priority{background:#ffc107}
+    .low-priority{background:#28a745}
+    .platform-strategy{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:30px;margin:30px 0}
+    .platform-detailed{background:white;border-radius:15px;padding:30px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+    .platform-header{display:flex;align-items:center;margin-bottom:20px}
+    .platform-icon{font-size:2em;margin-right:15px}
+    .platform-title{font-size:1.3em;font-weight:bold;color:#667eea}
+    .strategy-section{margin:20px 0}
+    .strategy-title{font-weight:bold;margin-bottom:10px;color:#333}
+    .recommendations-list{list-style:none;padding:0}
+    .recommendations-list li{padding:8px 0;border-bottom:1px solid #eee}
+    .recommendations-list li:last-child{border-bottom:none}
+    .alert{padding:20px;margin:20px 0;border-radius:12px;border-left:5px solid}
+    .alert-success{background:#d4edda;border-color:#28a745;color:#155724}
+    .alert-warning{background:#fff3cd;border-color:#ffc107;color:#856404}
+    .alert-info{background:#d1ecf1;border-color:#17a2b8;color:#0c5460}
+    .alert-danger{background:#f8d7da;border-color:#dc3545;color:#721c24}
+    .character-analysis{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin:30px 0}
+    .character-card{background:white;border-radius:15px;padding:25px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,0.1);transition:all 0.3s ease;border-top:4px solid #667eea}
+    .character-card:hover{transform:translateY(-5px)}
+    .character-name{font-weight:bold;color:#667eea;margin-bottom:10px;font-size:1.2em}
+    .character-role{color:#666;margin:8px 0;font-style:italic}
+    .character-score{background:#28a745;color:white;padding:8px 15px;border-radius:25px;font-size:0.9em;display:inline-block;margin-top:15px}
+    .character-details{text-align:left;margin:15px 0;font-size:0.9em;line-height:1.6}
+    @media (max-width: 768px) {
+      .report-content{padding:20px}
+      .nav-tabs{flex-direction:column}
+      .analysis-grid{grid-template-columns:1fr}
+      .stats-dashboard{grid-template-columns:1fr 1fr}
+      .segment-breakdown{grid-template-columns:1fr}
+      .platform-strategy{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo-container">
+        <div class="cube">
+          <div class="cube-face front">📊</div>
+          <div class="cube-face back">🎬</div>
+          <div class="cube-face left">🎯</div>
+          <div class="cube-face right">📈</div>
+          <div class="cube-face top">💡</div>
+          <div class="cube-face bottom">🚀</div>
+        </div>
+      </div>
+      <div class="brand-name">insights3D</div>
+      <div class="brand-tagline">Data-Driven. Digital. Decoded by AI</div>
+    </div>
+
+    <div class="report-content">
+      <h1 style="text-align:center;color:#667eea;margin-bottom:15px;font-size:3em;">The Ba**ds of Bollywood</h1>
+      <p style="text-align:center;font-size:1.3em;margin-bottom:40px;color:#666;">Strategic Analysis Report: Performance & Promotion Strategy Assessment</p>
+
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="overview">Strategic Overview</button>
+        <button class="nav-tab" data-tab="segments">Segment Analysis</button>
+        <button class="nav-tab" data-tab="performance">Performance Metrics</button>
+        <button class="nav-tab" data-tab="recommendations">Critical Issues</button>
+        <button class="nav-tab" data-tab="strategy">Platform Strategy</button>
+      </div>
+
+      <div id="overview" class="tab-content active">
+        <div class="executive-summary">
+          <h2 style="color:#667eea;margin-bottom:20px;">Executive Summary</h2>
+          <p><strong>Strategic Position:</strong> "The Ba**ds of Bollywood" presents a <strong>Solid Performer</strong> with strategic potential for broader market impact. The 180-second trailer demonstrates strong satirical positioning within the Bollywood genre, leveraging star power (Shah Rukh Khan, Bobby Deol) and meta-commentary on industry dynamics. However, execution gaps in narrative clarity and pacing consistency present optimization opportunities.</p>
+          <br>
+          <p><strong>Market Position:</strong> Satirical crime-drama targeting Bollywood-aware audiences with crossover appeal. Industry insider perspective with high-profile talent integration creates unique value proposition but risks niche limitation.</p>
+        </div>
+
+        <div class="stats-dashboard">
+          <div class="stat-card" style="background:linear-gradient(135deg,#28a745,#20c997);">
+            <div class="stat-value">8.1</div>
+            <div class="stat-label">Overall Performance Score</div>
+          </div>
+          <div class="stat-card" style="background:linear-gradient(135deg,#667eea,#764ba2);">
+            <div class="stat-value">8.3</div>
+            <div class="stat-label">Music Impact Score</div>
+          </div>
+          <div class="stat-card" style="background:linear-gradient(135deg,#fd7e14,#ffc107);">
+            <div class="stat-value">8.1</div>
+            <div class="stat-label">Visual Appeal Score</div>
+          </div>
+          <div class="stat-card" style="background:linear-gradient(135deg,#e83e8c,#6f42c1);">
+            <div class="stat-value">7.3</div>
+            <div class="stat-label">Emotional Impact</div>
+          </div>
+        </div>
+
+        <div class="key-insights">
+          <div class="insight-card">
+            <div class="insight-title">Critical Success Factors</div>
+            <ul style="margin:10px 0;line-height:1.8;">
+              <li><strong>Star Power Utilization:</strong> Shah Rukh Khan's late reveal creates strong viral potential (+1.2 vs Industry Avg)</li>
+              <li><strong>Genre Differentiation:</strong> Bollywood satire niche with limited competition</li>
+              <li><strong>Production Quality:</strong> Red Chillies Entertainment backing ensures technical standards</li>
+              <li><strong>Industry Commentary:</strong> Resonates with target demographic familiar with Bollywood dynamics</li>
+            </ul>
+          </div>
+          
+          <div class="insight-card">
+            <div class="insight-title">Strategic Risk Assessment</div>
+            <ul style="margin:10px 0;line-height:1.8;">
+              <li><strong>Moderate Risk:</strong> Plot complexity may limit mass market penetration</li>
+              <li><strong>Character Overload:</strong> 6+ characters introduced in 180 seconds reduces protagonist connection time</li>
+              <li><strong>Pacing Inconsistency:</strong> Rapid transitions compromise narrative clarity</li>
+              <li><strong>Satirical Balance:</strong> Industry insider jokes may alienate broader audiences</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="analysis-grid">
+          <div class="analysis-card">
+            <div class="analysis-header strengths">Strategic Strengths</div>
+            <ul style="line-height:1.8;">
+              <li><strong>Well-defined protagonist-antagonist dynamic</strong> with clear character arc progression</li>
+              <li><strong>Effective narrative rhythm and tension building</strong> across 180-second structure</li>
+              <li><strong>Strong cast integration</strong> with established industry credibility</li>
+              <li><strong>High music impact score (8.3)</strong> enhances emotional engagement and memorability</li>
+              <li><strong>Authentic regional visual presentation</strong> with Bollywood aesthetic consistency</li>
+            </ul>
+          </div>
+          
+          <div class="analysis-card">
+            <div class="analysis-header weaknesses">Execution Gaps</div>
+            <ul style="line-height:1.8;">
+              <li><strong>Narrative clarity deficiencies</strong> impacting audience comprehension and investment</li>
+              <li><strong>Secondary character development insufficient</strong> for emotional resonance</li>
+              <li><strong>Pacing inconsistencies</strong> create jarring transitions between segments</li>
+              <li><strong>Limited emotional depth</strong> in key character moments</li>
+              <li><strong>Plot complexity overload</strong> within constrained timeframe</li>
+            </ul>
+          </div>
+
+          <div class="analysis-card">
+            <div class="analysis-header improvements">Optimization Opportunities</div>
+            <ul style="line-height:1.8;">
+              <li><strong>Narrative streamlining</strong> to enhance plot clarity and audience comprehension</li>
+              <li><strong>Character count reduction</strong> to 3-4 maximum for deeper connection</li>
+              <li><strong>Enhanced satirical elements</strong> to strengthen unique value proposition</li>
+              <li><strong>Pacing optimization</strong> to balance information density with engagement</li>
+              <li><strong>Star power leverage enhancement</strong> through strategic placement and integration</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="character-analysis">
+          <div class="character-card">
+            <div class="character-name">Aasman Singh</div>
+            <div class="character-role">Lead Protagonist</div>
+            <div class="character-details">Central to all major segments with compelling character arc from rising star to controversy. Strong screen presence with effective emotional range demonstration. Character development shows clear progression but requires enhanced emotional depth for maximum audience investment.</div>
+            <div class="character-score">8.0</div>
+          </div>
+          <div class="character-card">
+            <div class="character-name">Shah Rukh Khan</div>
+            <div class="character-role">Strategic Cameo</div>
+            <div class="character-details">Creates major viral potential and star power leverage. Late reveal maximizes impact and generates significant social media buzz potential. Strategic positioning enhances overall production credibility and market appeal.</div>
+            <div class="character-score">9.0</div>
+          </div>
+          <div class="character-card">
+            <div class="character-name">Bobby Deol</div>
+            <div class="character-role">Action Catalyst</div>
+            <div class="character-details">Adds established actor credibility to ensemble cast. Strong action sequence integration with effective antagonist positioning. Contributes to overall star power quotient and genre authenticity.</div>
+            <div class="character-score">7.5</div>
+          </div>
+          <div class="character-card">
+            <div class="character-name">Disha Patani</div>
+            <div class="character-role">Glamour Element</div>
+            <div class="character-details">Represents aspirational lifestyle and fame journey visualization. Effective red carpet and glamour sequence integration. Contributes to visual appeal and target demographic attraction.</div>
+            <div class="character-score">8.5</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="segments" class="tab-content">
+        <h2 style="color:#667eea;margin-bottom:30px;">Comprehensive Segment Analysis</h2>
+        
+        <div class="alert alert-info">
+          <strong>Analysis Methodology:</strong> Each segment evaluated across pacing, visual appeal, emotional impact, narrative contribution, technical quality, and audience engagement potential with industry benchmarking.
+        </div>
+        
+        <div class="segment-timeline">
+          <div class="timeline-item" data-segment="opening">
+            <div class="timeline-timestamp">00:03-00:13</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Awards Show Hook</div>
+              <div class="timeline-description">Netflix series introduction with awards ceremony setting - establishes genre and production values</div>
+            </div>
+            <div class="timeline-score">7.0</div>
+          </div>
+
+          <div class="timeline-item" data-segment="fame">
+            <div class="timeline-timestamp">00:13-00:23</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Rise to Fame Sequence</div>
+              <div class="timeline-description">Red carpet glamour, media frenzy, celebrity lifestyle progression - character establishment phase</div>
+            </div>
+            <div class="timeline-score">7.8</div>
+          </div>
+
+          <div class="timeline-item" data-segment="satire">
+            <div class="timeline-timestamp">00:35-00:47</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Bollywood Industry Satire</div>
+              <div class="timeline-description">Aamir Khan and Rajamouli interactions - meta-commentary and industry insider perspective</div>
+            </div>
+            <div class="timeline-score">7.2</div>
+          </div>
+
+          <div class="timeline-item" data-segment="romance">
+            <div class="timeline-timestamp">00:52-01:07</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Romance & Relationship Arc</div>
+              <div class="timeline-description">Love sequences with Karan Johar connection - emotional depth and character development</div>
+            </div>
+            <div class="timeline-score">7.8</div>
+          </div>
+
+          <div class="timeline-item" data-segment="downfall">
+            <div class="timeline-timestamp">01:07-01:23</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Controversy & Downward Spiral</div>
+              <div class="timeline-description">Underworld connections, legal troubles - narrative tension and dramatic shift</div>
+            </div>
+            <div class="timeline-score">8.2</div>
+          </div>
+
+          <div class="timeline-item" data-segment="climax">
+            <div class="timeline-timestamp">01:51-02:11</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Action Climax & SRK Reveal</div>
+              <div class="timeline-description">High-energy action sequences, Shah Rukh Khan appearance - maximum impact finale</div>
+            </div>
+            <div class="timeline-score">8.6</div>
+          </div>
+        </div>
+
+        <div class="detailed-analysis" id="segmentDetails">
+          <p style="text-align:center;color:#666;font-style:italic;font-size:1.1em;">Click on any segment above to view detailed performance analysis</p>
+        </div>
+      </div>
+
+      <div id="performance" class="tab-content">
+        <h2 style="color:#667eea;margin-bottom:30px;">Performance Metrics & Benchmarking</h2>
+        
+        <div class="performance-dashboard">
+          <div class="performance-card">
+            <div class="metric-header">
+              <div class="metric-title">Character Presence & Development</div>
+              <div class="metric-score">7.5/10</div>
+            </div>
+            <div class="benchmark-comparison">
+              <div class="benchmark-item">
+                <span>Well-defined protagonist-antagonist dynamic</span>
+                <span><strong>+0.3 vs Industry Avg</strong></span>
+              </div>
+              <div class="benchmark-item">
+                <span>Effective narrative rhythm and tension</span>
+                <span><strong>+0.4 vs Industry Avg</strong></span>
+              </div>
+            </div>
+            <p><strong>Strategic Assessment:</strong> Strong character foundation with established dynamics but requires enhanced secondary character development for maximum emotional investment.</p>
+          </div>
+
+          <div class="performance-card">
+            <div class="metric-header">
+              <div class="metric-title">Narrative Pacing & Structure</div>
+              <div class="metric-score">7.9/10</div>
+            </div>
+            <div class="benchmark-comparison">
+              <div class="benchmark-item">
+                <span>Segment transition effectiveness</span>
+                <span><strong>Above benchmark</strong></span>
+              </div>
+              <div class="benchmark-item">
+                <span>Information density management</span>
+                <span><strong>Optimization needed</strong></span>
+              </div>
+            </div>
+            <p><strong>Critical Gap:</strong> Rapid scene transitions compromise narrative clarity. Recommend 15-20% pacing adjustment to maximize comprehension without sacrificing energy.</p>
+          </div>
+
+          <div class="performance-card">
+            <div class="metric-header">
+              <div class="metric-title">Visual & Cinematographic Quality</div>
+              <div class="metric-score">7.5/10</div>
+            </div>
+            <div class="benchmark-comparison">
+              <div class="benchmark-item">
+                <span>Authentic regional visual presentation</span>
+                <span><strong>+0.2 vs Industry</strong></span>
+              </div>
+              <div class="benchmark-item">
+                <span>Lighting consistency</span>
+                <span><strong>Slight advantage</strong></span>
+              </div>
+            </div>
+            <p><strong>Quality Assessment:</strong> Visually appealing with diverse settings but inconsistent quality across segments. Some shots lack sharpness, with lighting and color grading variations.</p>
+          </div>
+
+          <div class="performance-card">
+            <div class="metric-header">
+              <div class="metric-title">Audio & Music Impact</div>
+              <div class="metric-score">8.3/10</div>
+            </div>
+            <div class="benchmark-comparison">
+              <div class="benchmark-item">
+                <span>Strong atmospheric enhancement</span>
+                <span><strong>+0.8 vs Industry</strong></span>
+              </div>
+              <div class="benchmark-item">
+                <span>Clear dialogue delivery</span>
+                <span><strong>Significant strength</strong></span>
+              </div>
+            </div>
+            <p><strong>Quality Assessment:</strong> Strong music impact score (8.3) with effective sound mixing. Impactful Bollywood music, clear dialogue delivery, effective sound effects. Highest performing metric with significant competitive advantage.</p>
+          </div>
+
+          <div class="performance-card">
+            <div class="metric-header">
+              <div class="metric-title">Emotional Impact & Resonance</div>
+              <div class="metric-score">7.3/10</div>
+            </div>
+            <div class="benchmark-comparison">
+              <div class="benchmark-item">
+                <span>Primary improvement opportunity</span>
+                <span><strong>-0.2 vs Industry</strong></span>
+              </div>
+              <div class="benchmark-item">
+                <span>Character connection time</span>
+                <span><strong>Key weakness</strong></span>
+              </div>
+            </div>
+            <p><strong>Critical Issue:</strong> Limited time for audience emotional investment due to character overload. Requires strategic character reduction and enhanced emotional depth scenes.</p>
+          </div>
+
+          <div class="performance-card">
+            <div class="metric-header">
+              <div class="metric-title">Star Power Integration & Utilization</div>
+              <div class="metric-score">9.0/10</div>
+            </div>
+            <div class="benchmark-comparison">
+              <div class="benchmark-item">
+                <span>SRK cameo maximizes impact</span>
+                <span><strong>+1.2 vs Industry</strong></span>
+              </div>
+              <div class="benchmark-item">
+                <span>Established actor credibility</span>
+                <span><strong>Major strength</strong></span>
+              </div>
+            </div>
+            <p><strong>Strategic Advantage:</strong> Exceptional star power utilization creates significant viral potential and market differentiation. Late reveal strategy maximizes social media buzz generation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="recommendations" class="tab-content">
+        <h2 style="color:#667eea;margin-bottom:30px;">Critical Issues & Strategic Recommendations</h2>
+        
+        <div class="critical-issues">
+          <h3 style="color:#dc3545;margin-bottom:20px;">Primary Strategic Concerns</h3>
+          <div class="alert alert-danger">
+            <strong>Narrative Overload Crisis:</strong> 6+ characters introduced in 180 seconds creates cognitive overload, reducing protagonist connection time by 40% below optimal levels. Core conflict becomes unclear due to rapid scene transitions, limiting audience investment and emotional resonance.
+          </div>
+        </div>
+
+        <div class="issue-priority">
+          <div class="priority-card priority-high">
+            <div class="priority-header">
+              Immediate Action Required
+              <span class="priority-badge high-priority">URGENT</span>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Character Count Optimization</div>
+              <ul class="recommendations-list">
+                <li><strong>Reduce to 3-4 maximum characters</strong> to allow 25-30 seconds per character for meaningful connection</li>
+                <li><strong>Eliminate secondary plotlines</strong> that don't directly serve protagonist journey</li>
+                <li><strong>Focus narrative on core conflict</strong> between fame, authenticity, and survival</li>
+              </ul>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Narrative Structure Streamlining</div>
+              <ul class="recommendations-list">
+                <li><strong>Extend protagonist introduction by 8-10 seconds</strong> for character establishment</li>
+                <li><strong>Reduce transition speed by 15-20%</strong> to improve comprehension without losing energy</li>
+                <li><strong>Create clearer story beats</strong> with distinct emotional peaks and valleys</li>
+              </ul>
+            </div>
+            <p><strong>Expected Impact:</strong> 0.5-0.8 point improvement in overall performance score, significantly enhanced audience engagement potential.</p>
+          </div>
+          
+          <div class="priority-card priority-medium">
+            <div class="priority-header">
+              Short-Term Strategic Improvements
+              <span class="priority-badge medium-priority">MEDIUM</span>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Emotional Depth Enhancement</div>
+              <ul class="recommendations-list">
+                <li><strong>Add 2-3 key emotional beats</strong> showing protagonist's internal struggle</li>
+                <li><strong>Enhance satirical elements</strong> to strengthen unique value proposition</li>
+                <li><strong>Improve character motivation clarity</strong> through dialogue and action alignment</li>
+              </ul>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Technical Quality Optimization</div>
+              <ul class="recommendations-list">
+                <li><strong>Standardize color grading</strong> across all segments for visual consistency</li>
+                <li><strong>Enhance lighting quality</strong> in 3-4 key scenes lacking sharpness</li>
+                <li><strong>Optimize sound mixing</strong> to maintain dialogue clarity during action sequences</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="priority-card priority-low">
+            <div class="priority-header">
+              Long-term Strategic Considerations
+              <span class="priority-badge low-priority">LOW</span>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Market Positioning Refinement</div>
+              <ul class="recommendations-list">
+                <li><strong>Develop distinctive visual identity</strong> that enhances satirical elements</li>
+                <li><strong>Create character-specific promotional assets</strong> for targeted marketing</li>
+                <li><strong>Optimize for international market appeal</strong> without losing cultural authenticity</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          <strong>Implementation Timeline:</strong> High priority items should be addressed within 2-3 weeks to maximize pre-release optimization. Medium priority improvements can enhance ongoing promotional campaigns. Budget requirement estimated at moderate level with expected 0.5+ point improvement in overall performance metrics.
+        </div>
+      </div>
+
+      <div id="strategy" class="tab-content">
+        <h2 style="color:#667eea;margin-bottom:30px;">Comprehensive Platform Strategy & Execution Plan</h2>
+        
+        <div class="platform-strategy">
+          <div class="platform-detailed">
+            <div class="platform-header">
+              <div class="platform-icon">📱</div>
+              <div class="platform-title">YouTube Shorts Strategy</div>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Optimal Duration: 50-60 seconds</div>
+              <p><strong>Content Focus:</strong> Rising star sequence (0:12-0:20), action climax (1:15-1:25), SRK reveal (1:57-2:04)</p>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Target Audience Strategy</div>
+              <ul class="recommendations-list">
+                <li><strong>Primary:</strong> Bollywood enthusiasts, general entertainment viewers (18-35)</li>
+                <li><strong>Secondary:</strong> Shah Rukh Khan fanbase, action genre followers</li>
+                <li><strong>Engagement Strategy:</strong> Emphasize drama and star power with trending sounds</li>
+              </ul>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Optimized Script</div>
+              <p><em>"Witness Aasman Singh's meteoric rise and dramatic fall in Bollywood's dark underbelly. When fame becomes a trap and scandals threaten everything, who can you trust? Starring Shah Rukh Khan. This September, only on Netflix."</em></p>
+            </div>
+          </div>
+          
+          <div class="platform-detailed">
+            <div class="platform-header">
+              <div class="platform-icon">📸</div>
+              <div class="platform-title">Instagram Reels Execution</div>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Optimal Duration: 45-60 seconds</div>
+              <p><strong>Content Selection:</strong> Intrigue hook (0:00-0:08), red carpet glamour (0:20-0:30), action sequences (1:15-1:25), SRK appearance (1:57-2:04)</p>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Visual Enhancement Strategy</div>
+              <ul class="recommendations-list">
+                <li><strong>Text overlays</strong> highlighting key plot points and star appearances</li>
+                <li><strong>Dynamic transitions</strong> with beat-matched cuts to enhance excitement</li>
+                <li><strong>Hashtag optimization:</strong> #Bollywood #Netflix #ShahRukhKhan #BobbyDeol #RedChilliesEntertainment</li>
+              </ul>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Engagement Maximization</div>
+              <p><strong>Caption Strategy:</strong> "Bollywood like you've never seen before. When the spotlight becomes a prison and fame turns deadly, survival becomes the ultimate performance. 🎬✨"</p>
+            </div>
+          </div>
+
+          <div class="platform-detailed">
+            <div class="platform-header">
+              <div class="platform-icon">🐦</div>
+              <div class="platform-title">Twitter/X Video Strategy</div>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Optimal Duration: 30-45 seconds</div>
+              <p><strong>Content Focus:</strong> Rising star momentum (0:12-0:20), dramatic conflict (1:15-1:25), star power reveal (1:57-2:04)</p>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Conversation Generation</div>
+              <ul class="recommendations-list">
+                <li><strong>Discussion Threads:</strong> Bollywood satire elements, industry commentary</li>
+                <li><strong>Quote Strategy:</strong> Director and actor insights on satirical themes</li>
+                <li><strong>Hashtag Amplification:</strong> #BollyWoodSatire #IndustryInsider #NetflixOriginal</li>
+              </ul>
+            </div>
+            <div class="strategy-section">
+              <div class="strategy-title">Critical Positioning</div>
+              <p><strong>Script:</strong> "The dark side of Bollywood exposed. What happens when the cameras stop rolling and the real drama begins? Watch the truth unfold this September on Netflix."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-success">
+          <strong>Multi-Platform Integration Strategy:</strong> Cross-platform content should maintain consistent messaging while optimizing format-specific engagement patterns. Coordinate release timing for maximum viral amplification, with YouTube Shorts leading (maximum reach), followed by Instagram Reels (engagement), and Twitter/X (conversation generation).
+        </div>
+
+        <div class="insight-card" style="margin-top:30px;">
+          <div class="insight-title">Expected Performance Metrics</div>
+          <div class="benchmark-comparison">
+            <div class="benchmark-item">
+              <span><strong>YouTube Shorts:</strong> 2-5M views potential</span>
+              <span>High viral coefficient</span>
+            </div>
+            <div class="benchmark-item">
+              <span><strong>Instagram Reels:</strong> 1-3M reach potential</span>
+              <span>Strong engagement rates</span>
+            </div>
+            <div class="benchmark-item">
+              <span><strong>Twitter/X:</strong> 500K-1M impressions</span>
+              <span>Quality conversation generation</span>
+            </div>
+          </div>
+          <p><strong>Success Metrics:</strong> Track engagement rates, share velocity, comment sentiment, and hashtag performance across all platforms. Optimize content based on real-time performance data and audience feedback patterns.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="logo-container">
+        <div class="cube">
+          <div class="cube-face front">📊</div>
+          <div class="cube-face back">🎬</div>
+          <div class="cube-face left">🎯</div>
+          <div class="cube-face right">📈</div>
+          <div class="cube-face top">💡</div>
+          <div class="cube-face bottom">🚀</div>
+        </div>
+      </div>
+      <h3 style="font-size:1.8em;margin-bottom:15px;">insights3D</h3>
+      <p style="font-size:1em;margin-bottom:20px;opacity:.9;">Strategic Analysis | Data-Driven. Digital. Decoded by AI</p>
+      <p style="font-size:1.1em;margin-bottom:10px;">© Copyright Insights3d.com</p>
+      <p style="font-size:1em;">Contact <a href="mailto:aneesh@insights3d.com" class="footer-link">aneesh@insights3d.com</a> to generate your custom strategic analysis</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tab functionality
+      const tabButtons = document.querySelectorAll('.nav-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetTab = this.getAttribute('data-tab');
+          
+          // Remove active class from all tabs and contents
+          tabButtons.forEach(tab => tab.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          
+          // Add active class to clicked tab and corresponding content
+          this.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+      
+      // Segment timeline functionality
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      const segmentDetails = document.getElementById('segmentDetails');
+      
+      const segmentData = {
+        opening: `<h3>Awards Show Hook (00:03-00:13) - Performance Score: 7.0/10</h3>
+          <div class="segment-breakdown">
+            <div class="breakdown-section">
+              <div class="breakdown-title">Strategic Strengths</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Netflix branding integration</strong> creates immediate platform association and credibility</li>
+                <li><strong>Glamorous awards ceremony setting</strong> establishes high production values and aspirational context</li>
+                <li><strong>Genre establishment</strong> through visual cues and atmospheric elements</li>
+                <li><strong>Strong opening hook</strong> with intriguing dialogue and dramatic music creating immediate suspense</li>
+              </ul>
+            </div>
+            <div class="breakdown-section">
+              <div class="breakdown-title">Critical Weaknesses & Optimization</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Lacks clear narrative context</strong> - difficult to understand protagonist motivation or story stakes</li>
+                <li><strong>Character introduction insufficient</strong> for audience connection within constrained timeframe</li>
+                <li><strong>Story hook could be more compelling</strong> with specific conflict visualization</li>
+                <li><strong>Emotional engagement limited</strong> due to rapid pacing without character establishment</li>
+              </ul>
+            </div>
+          </div>
+          <div class="alert alert-warning">
+            <strong>Actionable Recommendations:</strong> Add 3-5 seconds of character-specific visual storytelling to establish protagonist personality. Include brief dialogue hint about core conflict. Extend opening by 8-10% to allow audience orientation without sacrificing energy.
+          </div>`,
+        
+        fame: `<h3>Rise to Fame Sequence (00:13-00:23) - Performance Score: 7.8/10</h3>
+          <div class="segment-breakdown">
+            <div class="breakdown-section">
+              <div class="breakdown-title">Strategic Strengths</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Exceptional visual appeal</strong> with red carpet glamour and celebrity lifestyle visualization</li>
+                <li><strong>Effective montage construction</strong> showing clear progression from unknown to famous</li>
+                <li><strong>Strong aspirational content</strong> appealing to target demographic dreams and desires</li>
+                <li><strong>High-impact music integration</strong> enhancing emotional resonance and energy</li>
+                <li><strong>Celebrity ecosystem establishment</strong> with Disha Patani and media presence</li>
+              </ul>
+            </div>
+            <div class="breakdown-section">
+              <div class="breakdown-title">Strategic Gaps & Enhancement</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Relies heavily on montage without memorable story beat</strong> - lacks specific talent demonstration</li>
+                <li><strong>Character personality remains undefined</strong> beyond surface-level success visualization</li>
+                <li><strong>Emotional investment opportunity missed</strong> - focus on external success vs internal journey</li>
+                <li><strong>Predictable progression</strong> without unique character moments or distinctive choices</li>
+              </ul>
+            </div>
+          </div>
+          <div class="alert alert-info">
+            <strong>Enhancement Strategy:</strong> Include 5-7 second sequence showcasing protagonist's specific talent or unique personality trait. Add brief moment showing personal cost of fame or internal conflict to create emotional depth.
+          </div>`,
+        
+        satire: `<h3>Bollywood Industry Satire (00:35-00:47) - Performance Score: 7.2/10</h3>
+          <div class="segment-breakdown">
+            <div class="breakdown-section">
+              <div class="breakdown-title">Unique Value Proposition</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Meta-commentary excellence</strong> with Aamir Khan and Rajamouli providing industry insider perspective</li>
+                <li><strong>Satirical positioning</strong> differentiates from traditional Bollywood promotional content</li>
+                <li><strong>Industry credibility</strong> through established filmmaker participation</li>
+                <li><strong>Quotable dialogue moments</strong> with humorous food preference exchange creating memorable beats</li>
+                <li><strong>Authentic industry dynamics</strong> resonating with Bollywood-aware audiences</li>
+              </ul>
+            </div>
+            <div class="breakdown-section">
+              <div class="breakdown-title">Market Limitations & Expansion</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Niche appeal risk</strong> - insider jokes may alienate broader mainstream audiences</li>
+                <li><strong>Cultural specificity</strong> limiting international market penetration potential</li>
+                <li><strong>Satirical balance needed</strong> between industry commentary and universal entertainment</li>
+                <li><strong>Limited emotional stakes</strong> in this segment reducing overall narrative momentum</li>
+              </ul>
+            </div>
+          </div>
+          <div class="alert alert-success">
+            <strong>Strategic Optimization:</strong> Maintain satirical elements while adding universal comedy beats accessible to non-industry audiences. Balance meta-commentary with character-driven humor for broader appeal.
+          </div>`,
+
+        romance: `<h3>Romance & Relationship Arc (00:52-01:07) - Performance Score: 7.8/10</h3>
+          <div class="segment-breakdown">
+            <div class="breakdown-section">
+              <div class="breakdown-title">Emotional Depth Enhancement</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Strong romantic cinematography</strong> with beach sequences and warm visual palette</li>
+                <li><strong>Karan Johar connection</strong> adds industry credibility and romantic genre expertise</li>
+                <li><strong>Character vulnerability display</strong> showing softer side beyond fame and ambition</li>
+                <li><strong>Visual storytelling effectiveness</strong> through location and costume design</li>
+                <li><strong>Pacing balance</strong> providing emotional breather before dramatic escalation</li>
+              </ul>
+            </div>
+            <div class="breakdown-section">
+              <div class="breakdown-title">Development Opportunities</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Limited character development</strong> for romantic interest - needs stronger personality definition</li>
+                <li><strong>Relationship stakes unclear</strong> - why this romance matters to protagonist journey</li>
+                <li><strong>Generic romantic tropes</strong> without distinctive character-specific elements</li>
+                <li><strong>Insufficient conflict establishment</strong> for meaningful romantic tension</li>
+              </ul>
+            </div>
+          </div>
+          <div class="alert alert-warning">
+            <strong>Enhancement Priority:</strong> Establish specific romantic stakes tied to protagonist's core conflict. Show how relationship impacts career decisions or personal growth for meaningful narrative integration.
+          </div>`,
+        
+        downfall: `<h3>Controversy & Downward Spiral (01:07-01:23) - Performance Score: 8.2/10</h3>
+          <div class="segment-breakdown">
+            <div class="breakdown-section">
+              <div class="breakdown-title">Dramatic Excellence</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Exceptional tension escalation</strong> with underworld connection revelation</li>
+                <li><strong>Strong visual contrast</strong> from glamorous lifestyle to dark, threatening environments</li>
+                <li><strong>Compelling conflict introduction</strong> showing real consequences and stakes</li>
+                <li><strong>Effective music integration</strong> with suspenseful score enhancing dramatic impact</li>
+                <li><strong>Character vulnerability display</strong> showing protagonist in genuine danger and moral conflict</li>
+              </ul>
+            </div>
+            <div class="breakdown-section">
+              <div class="breakdown-title">Narrative Integration Challenges</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Abrupt transition</strong> from romance to crisis lacks emotional preparation</li>
+                <li><strong>Limited audience investment time</strong> before dramatic consequences introduction</li>
+                <li><strong>Character motivation unclear</strong> - why protagonist makes dangerous choices</li>
+                <li><strong>Emotional stakes underdeveloped</strong> due to insufficient character foundation building</li>
+              </ul>
+            </div>
+          </div>
+          <div class="alert alert-danger">
+            <strong>Critical Enhancement:</strong> Add 3-5 second emotional setup showing protagonist's internal conflict or desperation before crisis escalation. Strengthen character motivation clarity for audience investment.
+          </div>`,
+        
+        climax: `<h3>Action Climax & SRK Reveal (01:51-02:11) - Performance Score: 8.6/10</h3>
+          <div class="segment-breakdown">
+            <div class="breakdown-section">
+              <div class="breakdown-title">Maximum Impact Achievement</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Shah Rukh Khan reveal</strong> creates massive viral potential and social media buzz generation</li>
+                <li><strong>High-energy action sequences</strong> providing visual spectacle and adrenaline engagement</li>
+                <li><strong>Strategic star power utilization</strong> maximizing market impact and audience excitement</li>
+                <li><strong>Strong production values display</strong> showcasing technical capabilities and budget investment</li>
+                <li><strong>Memorable finale construction</strong> leaving lasting impression for trailer recall and sharing</li>
+              </ul>
+            </div>
+            <div class="breakdown-section">
+              <div class="breakdown-title">Optimization Opportunities</div>
+              <ul style="line-height:1.6;">
+                <li><strong>Fast pacing sacrifices clarity</strong> in action choreography and story resolution</li>
+                <li><strong>SRK integration feels disconnected</strong> from main narrative thread</li>
+                <li><strong>Limited emotional payoff</strong> due to insufficient character development foundation</li>
+                <li><strong>Action sequence visibility</strong> could be improved with better shot selection and editing</li>
+              </ul>
+            </div>
+          </div>
+          <div class="alert alert-success">
+            <strong>Strategic Advantage:</strong> This segment delivers maximum commercial impact. Minor pacing adjustments and better narrative integration would elevate from excellent to exceptional performance levels.
+          </div>`
+      };
+      
+      timelineItems.forEach(item => {
+        item.addEventListener('click', function() {
+          const segmentType = this.getAttribute('data-segment');
+          
+          // Remove selected class from all timeline items
+          timelineItems.forEach(timelineItem => timelineItem.classList.remove('selected'));
+          
+          // Add selected class to clicked item
+          this.classList.add('selected');
+          
+          // Show segment details
+          if (segmentData[segmentType]) {
+            segmentDetails.innerHTML = segmentData[segmentType];
+            segmentDetails.classList.add('show');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
